@@ -21,7 +21,6 @@ class Tarefa(models.Model):
 
     data_criacao = models.DateTimeField(auto_now_add=True, null=False)
 
-    #  1 para N: uma tarefa pertence a um usuário
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='tarefas')
 
     def __str__(self):
