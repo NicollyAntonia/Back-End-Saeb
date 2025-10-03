@@ -4,7 +4,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
- 
+
 // Schema de validação
 const schemaEditarTarefa = z.object({
   prioridade: z.enum(["Baixa", "Media", "Alta"], {
@@ -14,13 +14,12 @@ const schemaEditarTarefa = z.object({
     errorMap: () => ({ message: "Escolha um status válido" }),
   }),
 });
- 
+
 export function EditarTarefa() {
-  const { id } = useParams(); // pega o ID da rota
+  const { id } = useParams();
   const navigate = useNavigate();
- 
   const [tarefa, setTarefa] = useState(null);
- 
+
   const {
     register,
     handleSubmit,
@@ -29,12 +28,14 @@ export function EditarTarefa() {
   } = useForm({
     resolver: zodResolver(schemaEditarTarefa),
   });
- 
+
+  const prioridades = ["Baixa", "Media", "Alta"];
+  const statusOptions = ["A fazer", "Fazendo", "Pronto"];
+
   useEffect(() => {
     axios
-      .get(`http://127.0.0.1:8000/tarefa/${id}/`)
+      .get(`http://127.0.0.1:8000/api/tarefas/${id}/`)
       .then((res) => {
-        console.log(res)
         setTarefa(res.data);
         reset({
           prioridade: res.data.prioridade,
@@ -43,61 +44,101 @@ export function EditarTarefa() {
       })
       .catch((err) => console.error("Erro ao buscar tarefa:", err));
   }, [id, reset]);
- 
-  // Função para salvar alterações
+
   async function salvarEdicao(data) {
     try {
-      await axios.patch(`http://127.0.0.1:8000/tarefa/${id}/`, data);
-      console.log(`Os dados do form${data}`)
+      await axios.patch(`http://127.0.0.1:8000/api/tarefas/${id}/`, data);
       alert("Tarefa atualizada com sucesso!");
-      navigate("/"); // volta para lista de tarefas
+      navigate("/");
     } catch (err) {
       console.error("Erro ao atualizar tarefa:", err.response?.data || err);
       alert("Erro ao atualizar tarefa");
     }
   }
- 
+
   if (!tarefa) return <p>Carregando...</p>;
- 
+
   return (
-    <section className="formulario">
-      <h2>Editar de Tarefa</h2>
-      <form onSubmit={handleSubmit(salvarEdicao)}>
- 
-        <label>Descrição:</label>
-        <textarea value={tarefa.descricao} readOnly />
- 
-        <label>Setor:</label>
-        <input type="text" value={tarefa.setor} readOnly />
- 
-        {/* <label>Usuário:</label>
-        <input type="text" value={tarefa.usuario.nome} readOnly /> */}
- 
-        <label>Data de Cadastro:</label>
-        <input type="text" value={tarefa.dt_cadastro} readOnly />
- 
-        <label>Prioridade:</label>
-        <select {...register("prioridade")}>
+    <section className="formulario" aria-labelledby="editar-tarefa-title">
+      <h2 id="editar-tarefa-title">Editar Tarefa</h2>
+      <form onSubmit={handleSubmit(salvarEdicao)} noValidate>
+        <label htmlFor="descricao">Descrição:</label>
+        <textarea
+          id="descricao"
+          value={tarefa.descricao}
+          readOnly
+          aria-readonly="true"
+        />
+
+        <label htmlFor="setor">Setor:</label>
+        <input
+          id="setor"
+          type="text"
+          value={tarefa.setor}
+          readOnly
+          aria-readonly="true"
+        />
+
+        <label htmlFor="usuario">Usuário:</label>
+        <input
+          id="usuario"
+          type="text"
+          value={tarefa.usuario?.nome || ""}
+          readOnly
+          aria-readonly="true"
+        />
+
+        <label htmlFor="dt_cadastro">Data de Cadastro:</label>
+        <input
+          id="dt_cadastro"
+          type="text"
+          value={tarefa.dt_cadastro}
+          readOnly
+          aria-readonly="true"
+        />
+
+        <label htmlFor="prioridade">Prioridade:</label>
+        <select
+          id="prioridade"
+          {...register("prioridade")}
+          aria-invalid={errors.prioridade ? "true" : "false"}
+          aria-describedby={errors.prioridade ? "prioridade-error" : undefined}
+        >
           <option value="">Selecione</option>
-          <option value="Baixa">Baixa</option>
-          <option value="Media">Média</option>
-          <option value="Alta">Alta</option>
+          {prioridades.map((p) => (
+            <option key={p} value={p}>
+              {p === "Media" ? "Média" : p}
+            </option>
+          ))}
         </select>
-        {errors.prioridade && <p style={{ color: "red" }}>{errors.prioridade.message}</p>}
- 
-        <label>Status:</label>
-        <select {...register("status")}>
+        {errors.prioridade && (
+          <p id="prioridade-error" className="error">
+            {errors.prioridade.message}
+          </p>
+        )}
+
+        <label htmlFor="status">Status:</label>
+        <select
+          id="status"
+          {...register("status")}
+          aria-invalid={errors.status ? "true" : "false"}
+          aria-describedby={errors.status ? "status-error" : undefined}
+        >
           <option value="">Selecione</option>
-          <option value="A fazer">A fazer</option>
-          <option value="Fazendo">Fazendo</option>
-          <option value="Pronto">Pronto</option>
+          {statusOptions.map((s) => (
+            <option key={s} value={s}>
+              {s}
+            </option>
+          ))}
         </select>
-        {errors.status && <p style={{ color: "red" }}>{errors.status.message}</p>}
- 
- 
+        {errors.status && (
+          <p id="status-error" className="error">
+            {errors.status.message}
+          </p>
+        )}
+
         <button type="submit">Editar</button>
       </form>
     </section>
   );
 }
- 

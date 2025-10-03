@@ -1,0 +1,76 @@
+.formulario {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2.5rem;
+  background: #f8f9fa;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  font-family: Arial, Helvetica, sans-serif;
+
+  h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    color: #2c3e50;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+
+    label {
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+      color: #34495e;
+    }
+
+    input,
+    select,
+    textarea {
+      padding: 0.75rem 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: all 0.2s ease-in-out;
+
+      &:focus {
+        border-color: #2980b9;
+        box-shadow: 0 0 5px rgba(41, 128, 185, 0.3);
+        outline: none;
+      }
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    button {
+      padding: 0.85rem;
+      background: #2980b9;
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+
+      &:hover {
+        background: #1f6391;
+        transform: translateY(-2px);
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
+    }
+
+    p.error {
+      font-size: 0.85rem;
+      color: #e74c3c;
+      margin: -0.3rem 0 0 0;
+    }
+  }
+}

@@ -25,6 +25,10 @@
       font-size: 1.2rem;
       color: $accent;
       margin: 0 0 .5rem 0;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      white-space: normal;
+
     }
   }
 
@@ -40,6 +44,9 @@
     dd {
       display: inline;
       margin: 0 .8rem 0 0;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      white-space: normal;
     }
   }
 
@@ -91,8 +98,8 @@
     }
 
     button {
-      background: color.adjust($accent, $lightness: 10%);
-      color: $text-light;
+      background: $primary;
+      color: $back;
       border: none;
       padding: .5rem 1rem;
       border-radius: $borda-arredondada;
